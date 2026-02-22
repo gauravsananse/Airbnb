@@ -1,25 +1,23 @@
 const express = require("express");
-const app= express();
+
 const mongoose= require("mongoose");
 const path=require("path");
 const Listing = require("./models/listing.js");
+const methodOverride= require("method-override")
+const ejsMate = require("ejs-mate");
 
-//creating database using mongoose and connection of mongoose
 
-// main()
-//     .then(()=>{
-//         console.log("connection successful");
-//     }).catch((err)=>{
-//         console.log(err);
-//     });
+const app= express();
 
-// async function main(){
-//     await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
-// }
-
+app.set("views",path.join(__dirname,"views"));
+app.set("view engine","ejs");
+app.use(express.urlencoded({extended : true}));
+app.use(methodOverride("_method"));
+app.engine("ejs",ejsMate);
+app.use(express.static(path.join(__dirname,"/public")));
 
 async function main() {
-  await mongoose.connect("mongodb+srv://gaurav:7798521471@cluster0.byrlu40.mongodb.net/?appName=Cluster0");
+  await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
   console.log("MongoDB connected");
 }
 
@@ -36,14 +34,10 @@ main()
 
 
 
-app.set("views",path.join(__dirname,"views"));
-app.set("view engine","ejs");
-app.use(express.urlencoded({extended : true}));
 
 
-// app.listen(8080,(req,res)=>{
-//     console.log("app is listening at port 8080..");
-// });
+
+
 
 app.get("/",(req,res)=>{
     res.send("hii i am root");
@@ -54,25 +48,49 @@ app.get("/listings",async(req,res)=>{
   res.render("./listings/index.ejs",{allListings});
 });
 
-
-app.get("/listings/:id",async(req,res)=>{
+//new route
+app.get("/listings/new",(req,res)=>{
+  res.render("listings/new.ejs");
+})
+ //show route
+app.get("/listings/:id",async(req,res)=>{  //individual show 
     let {id}=req.params;
     const listing = await Listing.findById(id);
     res.render("listings/show.ejs",{listing});
 
-
 })
 
-// app.get("/testListing",async(req,res)=>{
-//     let sampleListing = new Listing({  //new document
-//         title : "My new Villa",
-//         description : "By the beach",
-//         price : 1200,
-//         location : "Calangute Goa",
-//         country : "India",
-//     });
-//     await sampleListing.save()
-//     console.log("sample was saved");
-//     res.send("successful testing");
-    
-// });
+//create route after new route
+
+app.post("/listings",async(req,res)=>{
+  // let{title,description,image,price,country,location}=req.body; //this is too long for short make object listing[title]...in new.ejs
+  const newListing= new Listing(req.body.listing);
+  await newListing.save();
+  res.redirect("/listings");
+})
+
+//edit route
+
+app.get("/listings/:id/edit",async(req,res)=>{
+  let {id}=req.params;
+  const listing = await Listing.findById(id);
+  res.render("listings/edit.ejs",{listing});
+})
+
+//update route
+app.put("/listings/:id", async(req,res)=>{
+  let {id}=req.params;
+ await Listing.findByIdAndUpdate(id,{...req.body.listing});
+ res.redirect(`/listings/${id}`);
+})
+
+//DELETE route
+
+app.delete("/listings/:id", async(req,res)=>{
+  let {id}=req.params;
+  let deletedListing = await Listing.findByIdAndDelete(id)
+  console.log(deletedListing);
+  res.redirect("/listings");
+});
+
+
