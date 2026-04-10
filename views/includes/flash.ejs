@@ -1,0 +1,23 @@
+<% if(success && success.length){ %>
+  <div class="row">
+    <div class="col-12 col-md-8 offset-md-2">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<!-- flash for error -->
+
+<% if(error && error.length){ %>
+  <div class="row">
+    <div class="col-12 col-md-8 offset-md-2">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+<% } %>

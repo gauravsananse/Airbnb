@@ -4,9 +4,9 @@
         <div class="col-8 offset-2">
             <br><br>
     <h3>Create a New Listings</h3>
-    <form method="POST" action="/listings" novalidate class="needs-validation">
+    <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">  <!--due to this enctype we can upload the file -->
        <div class="mb-3">
-         <label for="title " class="form-label">Title</label>
+         <label for="title" class="form-label">Title</label>
          <input name="listing[title]" placeholder="enter title" type="text" class="form-control" required>
          <div class="valid-feedback">Title looks good!</div>
        </div>
@@ -18,9 +18,12 @@
         <div class="invalid-feedback">please enter a short description</div>
        </div>
         
-        <div class="mb-3">
-            <label for="image" class="form-label">image</label>
-            <input name="listing[image]" placeholder="enter image link/url" type="text" class="form-control" >
+      
+
+         <div class="mb-3">
+            <label for="image" class="form-label">Upload Image</label>
+            <input name="listing[image]"  type="file" class="form-control"  required>
+            
         </div>
         
         <div class="row">
