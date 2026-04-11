@@ -35,6 +35,9 @@ app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "0.0.0.0"]);
+
 const dbUrl = process.env.ATLASDB_URL;
 
 const store= MongoStore.create({
